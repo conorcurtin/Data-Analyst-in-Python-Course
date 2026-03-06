@@ -1,0 +1,45 @@
+#   Chapter 3
+#   Investigating Netflix Movies
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+netflix_df = pd.read_csv(r"C:\Users\P702902\OneDrive - Vitality\Desktop\Data Analyst in Python\Files\netflix_data.csv")
+
+#   What was the most frequent movie duration in the 1990's?
+
+movies = netflix_df[netflix_df["type"]== "Movie",netflix_df["genre"]== "Action" ] # Only keep type Movies, removing series
+movies_90s = movies[(movies["release_year"]>= 1990) & (movies["release_year"]<= 1999)]
+
+plt.figure(figsize=(10,6)) # Sets width and height, so everything can fit
+plt.hist(movies_90s["duration"], bins = 20, color="skyblue", edgecolor="black")# Bins groups times into sub-categories, for example 2, might be 0-100, and 101+
+avg = movies_90s["duration"].mean()
+plt.axvline(avg, color='red', linestyle='dashed', linewidth=2)
+plt.text(avg + 1, # Moves the mean label over slightly, for a better read
+         plt.ylim()[1]*0.9, # [1] Plots at the top and [0] at the bottom for the label
+         f"Mean: {round(avg)}", color="red")
+
+xlab = 'Time (Minutes)'
+ylab = 'Duration Grouped'
+title = 'Duration of movies in the 90s'
+plt.xlabel(xlab)
+plt.ylabel(ylab)
+plt.title(title)
+
+plt.show()
+
+#   Most popular duration of Movies in the 90s (saving the variable)
+average_duration = movies_90s["duration"].mean()
+print(f"Average 1990s movie duration: {average_duration:.0f} minutes")
+duration = 115 # Value returned from above
+popular_duration_time = 100
+
+#   Count of short-movies in the 90s (under 90 minutes)
+action_movies = movies_90s[(movies_90s["genre"]=="Action")]
+short_movie_count = 0
+
+for lab, row in action_movies.iterrows():
+    if row["duration"] <= 90:
+        short_movie_count += 1
+    print(short_movie_count)
+
